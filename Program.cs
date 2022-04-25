@@ -88,9 +88,9 @@ namespace _6_2
                 else return Create_romb();
             }
         }
-        static void Interface()
+        static void Interface_Rectangle(Rectangle obj1)
         {
-
+            Console.WriteLine("Программа может:\n1)")
         }
         static void Main(string[] args)
         {
@@ -98,7 +98,8 @@ namespace _6_2
             Parallelogram[] mas = new Parallelogram [2];
             mas[0] = Create_Parallelogram();
             mas[1] = Create_Parallelogram();
-
+            if (mas[0].isQuare) Interface_Rectangle((Rectangle)mas[0]); //это имеет смысл, правда
+            else 
         }
     }
     class Parallelogram
