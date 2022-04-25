@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,96 @@ namespace _6_2
 {
     class Program
     {
+        static public uint Try_Parse(byte option)
+        {
+            uint x;
+            bool a = UInt32.TryParse(Console.ReadLine(), out x);
+            if (!a)
+            {
+                Console.Write("Введено нечисловое значение. Повторите ввод: ");
+                return Try_Parse(option);
+            }
+            if ((option == 0 & x > 3) | (option == 1 & x > 7) | x == 0|(option == 2&x>2)) //я конченый
+            {
+                Console.Write("Введено не то число. Повторите ввод: ");
+                return Try_Parse(option);
+            }
+            return x;
+        }
+        static public int Try_Parse()
+        {
+            int x;
+            bool a = Int32.TryParse(Console.ReadLine(), out x);
+            if (!a)
+            {
+                Console.Write("Введено нечисловое значение. Повторите ввод: ");
+                return Try_Parse();
+            }
+            return x;
+        }
+        static public double Try_Parse_Double(byte option)
+        {
+            double x;
+            try
+            {
+                x = double.Parse(Console.ReadLine());
+            }
+            catch (FormatException)
+            {
+                Console.Write("Введено нечисловое значение. Повторите ввод: ");
+                return Try_Parse_Double(option);
+            }
+            if (option == 0 & (x <= 0 | x >= 180)) //угол (мб просто еще что-нибудь придется вводить...)
+            {
+                Console.Write("Введенное число должно быть параметром угла в градусах (от 0 до 180 невключительно). Повторите ввод: ");
+                return Try_Parse_Double(0);
+            }
+            return x;
+        }
+        static Rectangle Create_Rectangle()
+        {
+            Console.Write("Введите ширину параллелограмма: ");
+            int width = (int)Try_Parse(3);
+            Console.Write("Введите высоту параллелограмма: ");
+            int h = (int)Try_Parse(3);
+            return new Rectangle(h, width);
+        }
+        static Romb Create_romb()
+        {
+            Console.Write("Введите сторону ромба: ");
+            int width = (int)Try_Parse(3);
+            Console.Write("Введите угол ромба: ");
+            double alfa = Try_Parse_Double(0);
+            return new Romb(alfa, width);
+        }
+        static Parallelogram Create_Parallelogram()
+        {
+            Console.WriteLine("Введите 1, если хотите создать прямоугольник. Введите 2, если хотите создать ромб");
+            byte option = (byte)Try_Parse(2);
+            if (option == 1)
+            {
+                Console.WriteLine("Введите 1, если хотите создать с дефолтными значениями. Введите 2, если хотите ввести значения");
+                if ((byte)Try_Parse(2) == 1) return new Rectangle();
+                else return Create_Rectangle();
+            }
+            else
+            {
+                Console.WriteLine("Введите 1, если хотите создать с дефолтными значениями. Введите 2, если хотите ввести значения");
+                if ((byte)Try_Parse(2) == 1) return new Romb();
+                else return Create_romb();
+            }
+        }
+        static void Interface()
+        {
+
+        }
         static void Main(string[] args)
         {
+            //хочу продать класс и спокойно получить 2 за фоновую...
+            Parallelogram[] mas = new Parallelogram [2];
+            mas[0] = Create_Parallelogram();
+            mas[1] = Create_Parallelogram();
+
         }
     }
     class Parallelogram
@@ -17,6 +106,18 @@ namespace _6_2
         protected double alfa;
         protected int h;
         protected int width;
+        public Parallelogram()
+        {
+            alfa = 45;
+            h = 4;
+            width = 8;
+        }
+        public Parallelogram(double alfa, int h, int width)
+        {
+            this.alfa = alfa;
+            this.h = h;
+            this.width = width;
+        }
         public double Alfa
         {
             get
@@ -25,7 +126,7 @@ namespace _6_2
             }
             set
             {
-                if (value>0&value<180) alfa = value;
+                if (value > 0 & value < 180) alfa = value;
             }
         }
         public int H
@@ -36,7 +137,7 @@ namespace _6_2
             }
             set
             {
-               if (value>0) h = value;
+                if (value > 0) h = value;
             }
         }
         public int Width
@@ -50,7 +151,7 @@ namespace _6_2
                 if (value > 0) width = value;
             }
         }
-        public bool isQuare
+        public virtual bool isQuare
         {
             get
             {
@@ -60,8 +161,8 @@ namespace _6_2
         private double Rad
         {
             get
-            { 
-                return alfa/180*Math.PI;
+            {
+                return alfa / 180 * Math.PI;
             }
         }
         public double Storona
@@ -75,18 +176,86 @@ namespace _6_2
         {
             return h * width;
         }
-        public void Show()
+        public virtual void Show()
         {
             Console.WriteLine("Высота параллелограмма: {0}\nЗаданная сторона параллелограмма: {1}\nУгол в параллелограмме: {2:f2}", h, width, alfa);
         }
-        public double Perimetr()
+        public virtual double Perimetr()
         {
             return (Storona + (double)width) * 2;
         }
-        public double Diagonal()
+        public virtual double Diagonal()
         {
             return Math.Sqrt(Storona + width - Math.Abs(2 * Storona * width * Math.Cos(Rad)));
         }
     }
-   
+    class Rectangle :Parallelogram
+    {
+        public Rectangle()
+            : base(90,4,8)
+        {
+
+        }
+        public Rectangle(int h, int width)
+            : base(90, h, width)
+        {
+        }
+        public override void Show()
+        {
+            base.Show();
+            Console.WriteLine("Мы имеем дело с прямоугольником, держу в курсе");
+        }
+        public override double Diagonal()
+        {
+            return Math.Sqrt(width*width+h*h);
+        }
+        public override bool isQuare
+        {
+            get
+            {
+                return (width == h);
+            }
+        }
+    }
+    class Romb :Parallelogram
+    {
+        public Romb()
+            : base(45, Height(45, 8), 8)
+        {
+
+        }
+        public Romb(double alfa, int width)
+            :base(alfa, Height(alfa, width), width)
+        {
+
+        }
+        private static int Height(double alfa, int width)
+        {
+            return width * (int)Math.Sin(Radian(alfa));
+        }
+        private static double Radian(double alfa)
+        {
+            return alfa / 180 * Math.PI;
+        }
+        public override void Show()
+        {
+            base.Show();
+            Console.WriteLine("Мы имеем дело с ромбом, держу в курсе");
+        }
+        public override double Diagonal()
+        {
+            return 2*width * h / base.Diagonal();
+        }
+        public override double Perimetr()
+        {
+            return width * 4;
+        }
+        public override bool isQuare
+        {
+            get
+            {
+                return (alfa == 90);
+            }
+        }
+    }
 }
