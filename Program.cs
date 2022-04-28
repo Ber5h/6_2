@@ -18,7 +18,7 @@ namespace _6_2
                 Console.Write("Введено нечисловое значение. Повторите ввод: ");
                 return Try_Parse(option);
             }
-            if ((option == 0 & x > 3) | (option == 1 & x > 7) | x == 0|(option == 2&x>2)) //я конченый
+            if ((option == 0 & x > 5) | (option == 1 & x > 7) | x == 0|(option == 2&x>2)) //я конченый
             {
                 Console.Write("Введено не то число. Повторите ввод: ");
                 return Try_Parse(option);
@@ -88,9 +88,46 @@ namespace _6_2
                 else return Create_romb();
             }
         }
-        static void Interface_Rectangle(Rectangle obj1)
+        static void Interface_Rectangle(Rectangle obj1, Romb obj2)
         {
-            Console.WriteLine("Программа может:\n1)")
+            Console.WriteLine("Работа с ")
+            Console.WriteLine("Программа может:\n1)Вывести параметры прямоугольника\n2)Вывести значение его диагонали\n3)Проверить, является ли" +
+                " прямоугольник квадратом\n4)Посчитать его периметр\n5)Перейти к ромбу");
+            Console.Write("Введите команду (число от 1 до 5): ");
+            byte option = (byte)Try_Parse(0);
+            switch (option)
+            {
+                case 1:
+                    obj1.Show();
+                    Interface_Rectangle(obj1, obj2);
+                    break;
+                case 2:
+                    Console.WriteLine("Диагональ: {0}", obj1.Diagonal());
+                    break;
+                case 3:
+                    if (obj1.isQuare) Console.WriteLine("Прямоугольник является квадратом");
+                    else Console.WriteLine("Прямоугольник не является квадратом");
+                    break;
+                case 4:
+                    Console.WriteLine("Периметр прямоугольника: {0}", obj1.Perimetr());
+                    break;
+                case 5:
+                    Interface_Romb(obj2, obj1);
+                    break;
+
+            }
+        }
+        static void Interface_Romb(Romb obj1, Rectangle obj2)
+        {
+            Console.WriteLine("Программа может:\nВывести параметры ромба\n2)Вывести значение диагонали\n3)Проверить" +
+                ", является ли ромб квадратом\n4)Посчитать его периметр\n5)Перейти к прямоугольнику");
+            Console.Write("Введите команду (число от 1 до 5): ");
+            byte option = (byte)Try_Parse(0);
+            switch(option)
+            {
+                case 1:
+
+            }
         }
         static void Main(string[] args)
         {
@@ -98,8 +135,8 @@ namespace _6_2
             Parallelogram[] mas = new Parallelogram [2];
             mas[0] = Create_Parallelogram();
             mas[1] = Create_Parallelogram();
-            if (mas[0].isQuare) Interface_Rectangle((Rectangle)mas[0]); //это имеет смысл, правда
-            else 
+            if (mas[0].isQuare) Interface_Rectangle((Rectangle)mas[0],(Romb)mas[1]); //это имеет смысл, правда
+            else Interface_Romb((Romb)mas[0], (Rectangle)mas[1]);
         }
     }
     class Parallelogram
@@ -190,10 +227,10 @@ namespace _6_2
             return Math.Sqrt(Storona + width - Math.Abs(2 * Storona * width * Math.Cos(Rad)));
         }
     }
-    class Rectangle :Parallelogram
+    class Rectangle : Parallelogram
     {
         public Rectangle()
-            : base(90,4,8)
+            : base(90, 4, 8)
         {
 
         }
@@ -208,7 +245,11 @@ namespace _6_2
         }
         public override double Diagonal()
         {
-            return Math.Sqrt(width*width+h*h);
+            return Math.Sqrt(width * width + h * h);
+        }
+        public override double Perimetr()
+        {
+            return (width + h) * 2;
         }
         public override bool isQuare
         {
